@@ -1,0 +1,32 @@
+- hosts: all
+  become: yes
+  gather_facts: false
+  tasks:
+  - name: Install docker-compose
+    remote_user: vagrant
+    get_url:
+      url : https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: '0755'
+  - name: Add an github cli signing key
+    ansible.builtin.apt_key:
+      url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+      keyring: /usr/share/keyrings/githubcli-archive-keyring.gpg
+  - name: Get architecture
+    shell: dpkg --print-architecture
+    register: architecture
+  - name: Add github cli repository
+    ansible.builtin.apt_repository:
+      repo: deb [arch={{ architecture.stdout }} signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+      state: present
+      filename: github-cli
+  - name: Update repositories cache and install "gh" package
+    apt:
+      name: gh
+      update_cache: yes
+  - name: Install vim
+    apt:
+      name: vim
+  - name: Install tmux
+    apt:
+      name: tmux
