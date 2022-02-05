@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/bullseye64"
+  config.vm.box = "ubuntu/impish64"
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "dev"
